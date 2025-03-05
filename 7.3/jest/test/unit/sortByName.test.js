@@ -87,3 +87,24 @@ describe("Books names test suit 1", () => {
 		expect(output).toEqual(expected);
 	});
 });
+
+
+describe("Books names test suit 2", () => {
+	it("Books names should be sorted in ascending order ", () => {
+		const input = [
+			"Гарри Поттер",
+			"Гарри Поттер",
+			"Волшебник изумрудного города",
+		];
+
+		const expected = [
+			"Волшебник изумрудного города",
+			"Гарри Поттер",
+			"Гарри Поттер",
+		];
+
+		const output = sorting.sortByName(input);
+
+		expect(output).toEqual(expected);
+	});
+});

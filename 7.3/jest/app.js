@@ -5,8 +5,10 @@ function sortByName(inputArray) {
 		if (nameA < nameB)
 			//сортируем названия по возрастанию
 			return -1;
-		if (nameA > nameB) return 1;
-		return 0; // нет сортировки
+		if (nameA > nameB) {
+			return 1; //нет сортировки
+		}
+		return 0;
 	});
 	return inputArray;
 }
