@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand",
+    "test1": "jest"
   },
-  "author": "",
+  "author": "TatyanaGerasina",
   "license": "ISC",
   "dependencies": {
-    "jest": "^27.3.1",
-    "jest-puppeteer": "^6.0.0",
+    "jest": "^27.5.1",
+    "jest-puppeteer": "^6.2.0",
     "puppeteer": "^13.3.2"
+    
   }
 }

@@ -3,11 +3,11 @@ let page;
 beforeEach(async () => {
   page = await browser.newPage();
   await page.goto("https://github.com/team");
-});
+}, 6000);
 
 afterEach(() => {
   page.close();
-});
+}, 6000);
 
 describe("Github page tests", () => {
   test("The h1 header content'", async () => {
@@ -15,13 +15,13 @@ describe("Github page tests", () => {
     await firstLink.click();
     await page.waitForSelector('h1');
     const title2 = await page.title();
-    expect(title2).toEqual('GitHub: Where the world builds software · GitHub');
-  });
+    expect(title2).toEqual('GitHub · Build and ship software on a single, collaborative platform · GitHub');
+  }, 5000);
 
   test("The first link attribute", async () => {
     const actual = await page.$eval("a", link => link.getAttribute('href') );
     expect(actual).toEqual("#start-of-content");
-  });
+  }, 3000);
 
   test("The page contains Sign in button", async () => {
     const btnSelector = ".btn-large-mktg.btn-mktg";
@@ -29,6 +29,7 @@ describe("Github page tests", () => {
       visible: true,
     });
     const actual = await page.$eval(btnSelector, link => link.textContent);
-    expect(actual).toContain("Sign up for free")
-  });
+    expect(actual).toContain("Get started with Team")
+  }, 3000);
 });
+
