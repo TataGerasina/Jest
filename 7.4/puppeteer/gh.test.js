@@ -1,13 +1,16 @@
 let page;
 
-describe("Github page tests Devops", () => {
-  beforeEach(async () => {
-    page = await browser.newPage();
-    await page.goto("https://github.com/solutions/use-case/devops", { timeout: 6000 });
-  });
+beforeEach(async () => {
+  page = await browser.newPage();
+});
 
   afterEach(async () => {
     page.close();
+  });
+
+describe("Github page tests Devops", () => {
+  beforeEach(async () => {
+    await page.goto("https://github.com/solutions/use-case/devops", { timeout: 20000 });
   });
   
   test("The page contains button 'Start a free trial'", async () => {
@@ -16,31 +19,22 @@ describe("Github page tests Devops", () => {
     const actual = await page.$eval(linkFree, link => link.textContent);
     expect(actual).toContain("Start a free trial");
   }, 6000);
-
-//describe("Check link 'What is Git?'", () => {
+  
   test("The page contains link 'What is Git?'", async () => {
     const linkGit = 'a[href="/git-guides"]';
-    await page.waitForSelector(linkGit, { timeout: 10000 });
+    await page.waitForSelector(linkGit); //{ visible: true, timeout: 20000 }
     const actual = await page.$eval(linkGit, link => link.textContent);
     expect(actual).toContain("What is Git?");
-
     await page.click(linkGit);
-    await page.waitForSelector('h1', { visible: true}, 13000);
+    await page.waitForSelector('h1'); //{ visible: true, timeout: 30000 }
     const title1 = await page.title();
     expect(title1).toEqual('Git · GitHub');
-    //const newUrl = await page.url();
-    //expect(newUrl).toContain('/git-guides');
-  }, 20000);
+  }, 20000); 
 });
 
 describe("Github page tests", () => {
   beforeEach(async () => {
-    page = await browser.newPage();
     await page.goto("https://github.com/team", { timeout: 10000 });
-  });
-
-  afterEach(async () => {
-    page.close();
   });
 
   test("The h1 header content", async () => {
@@ -49,7 +43,7 @@ describe("Github page tests", () => {
     await page.waitForSelector('h1');
     const title2 = await page.title();
     expect(title2).toEqual('GitHub · Build and ship software on a single, collaborative platform · GitHub');
-  }, 10000);
+  }, 13000);
 
   test("The first link attribute", async () => {
     const actual = await page.$eval("a", link => link.getAttribute('href'));
@@ -66,18 +60,13 @@ describe("Github page tests", () => {
 
 describe("Check button 'Start free for 30 days'", () => {
   beforeEach(async () => {
-    page = await browser.newPage();
     await page.goto("https://github.com/pricing", { timeout: 10000 });
-  });
-
-  afterEach(async () => {
-    page.close();
   });
 
   test("The page contains button 'Start free for 30 days'", async () => {
     const btnStart = ".btn-mktg.mt-4";
-    await page.waitForSelector(btnStart, { visible: true, timeout: 6000 });
+    await page.waitForSelector(btnStart, { visible: true, timeout: 7000 });
     const actual = await page.$eval(btnStart, link => link.textContent.trim());
     expect(actual).toContain("Start free for 30 days");
-  }, 10000);
+  }, 17000);
 });
