@@ -30,14 +30,5 @@ module.exports = {
       throw new Error(`Not possible to type text for selector: ${selector}`);
     }
   },
-
-  pushSeats: async function (page, selector) {
-  try {
-  await page.$$(selector);
-  if (availableSeats.length === 0);
-} catch (error) {
-    throw new Error('Нет свободных мест для бронирования');
-  }
-}
 };
 
