@@ -12,9 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^4.3.4",
-    "cucumber": "^7.0.0-rc.0",
     "jest": "^27.3.1",
     "jest-puppeteer": "^6.0.0",
     "puppeteer": "^13.3.2"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0"
   }
 }

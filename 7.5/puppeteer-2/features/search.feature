@@ -1,21 +1,27 @@
-Function: Movie ticket booking - movie and time selection
+Feature: Бронирование билетов в кинотеатр
+  Пользователь должен иметь возможность забронировать билеты на сеансы
+@only
+  Scenario: Проверка заголовка главной страницы
+    Given Я нахожусь на главной странице
+    Then Я вижу заголовок "Идёмвкино"
 
-    Scenario: Session time selection is required
-        Given user is on "/navigation" page
-        When user searches for "17:00", clicks
-        Then user goes to the booking page and sees the title of the proposed movie "Унесенные ветром" and the session start time, hall
+  Scenario: Бронирование одного места
+    Given Я нахожусь на главной странице
+    When Я выбираю дату "7" и время "13:00"
+    And Я выбираю одно свободное стандартное место
+    And Я нажимаю кнопку "Забронировать"
+    Then Я вижу билет с местом "3/6"
 
+  Scenario: Бронирование двух мест
+    Given Я нахожусь на главной странице
+    When Я выбираю дату "9" и время "18:00"
+    And Я выбираю два свободных стандартных места
+    And Я нажимаю кнопку "Забронировать"
+    Then Я вижу билеты с местами "2/2, 2/3"
 
-
-//Функция: Бронирование билетов в кино
-//Сценарий: Необходимо выбрать свободное место для бронирования билетов на фильм "Унесенные ветром" Сегодня в 17:00
-//Пользователь находится на странице "/идём в кино"
-//Когда пользователь нажимает на свободное место стандарт "buying-scheme__chair buying-scheme__chair_standart buying-scheme__chair_selected"
-//Затем пользователь нажимает на кнопку "ЗАБРОНИРОВАТЬ" и переходит на страницу https://qamid.tmweb.ru/client/payment.php
-
-Function: Movie ticket booking
-
-    Scenario: Need to select a free seat to book tickets for the movie "Унесенные ветром" on today at 17:00
-        Given user is on "//https://qamid.tmweb.ru/client/hall.php" page 
-        When the user clicks on a free seat standard "buying-scheme__chair buying-scheme__chair_standart buying-scheme__chair_selected"
-        Then the user clicks on the "BOOK" button and goes to the page https://qamid.tmweb.ru/client/payment.php
+  Scenario: Попытка бронирования занятого места
+    Given Я нахожусь на главной странице
+    When Я выбираю дату "9" и время "18:00"
+    And Я выбираю уже занятое место
+    Then Кнопка бронирования должна быть неактивна
+    And Я вижу сообщение об ошибке "Место уже занято"

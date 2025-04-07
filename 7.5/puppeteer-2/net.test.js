@@ -26,11 +26,12 @@ describe("Go to cinema tests", () => {
   });
 
   test("Should select one chair", async () => {
-    await clickElement(page, 'a.page-nav__day[data-time-stamp="1743627600"]');
-    await clickElement(page, 'a.movie-seances__time[data-seance-start="780"');
+    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744405200"]'); //Сб 12 <a class="page-nav__day page-nav__day_weekend page-nav__day_chosen" href="#" data-time-stamp="1744405200">
+  
+    await clickElement(page, 'a.movie-seances__time[data-seance-start="780"'); //13:00
     
     // Ждём загрузки схемы зала
-    await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 10000 }); 
+    await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 30000 }); 
   
     // Ищем свободные места
     const availableSeats = await page.$$('.buying-scheme__chair_standart:not(.buying-scheme__chair_taken)');
@@ -52,12 +53,12 @@ describe("Go to cinema tests", () => {
     console.log("Текст билета:", actual); // Для отладки
   
     // Проверяем, что текст содержит информацию о месте
-    expect(actual).toContain("3/7");
+    expect(actual).toContain("3/6");
     }, 150000);
 
   test("Should select two chairs", async () => {
-    await clickElement(page, 'a.page-nav__day[data-time-stamp="1743714000"]'); //4 апреля
-    await clickElement(page, 'a.movie-seances__time[data-seance-start="1200"');
+    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744146000"]'); //9 апр <a class="page-nav__day" href="#" data-time-stamp="1744146000">
+    await clickElement(page, 'a.movie-seances__time[data-seance-start="1080"');  //18:00
     
     // Ждём загрузки схемы зала
     await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 10000 });
@@ -73,8 +74,8 @@ describe("Go to cinema tests", () => {
     }
   
     // Кликаем на два свободных места
-    await availableSeats[21].click();
-    await availableSeats[22].click();
+    await availableSeats[8].click();
+    await availableSeats[9].click();
     
     await page.waitForSelector('button.acceptin-button:not([disabled])');
     await clickElement(page, 'button.acceptin-button');
@@ -83,38 +84,44 @@ describe("Go to cinema tests", () => {
     console.log("Текст билета:", actual); // Для отладки
   
     //Проверяем, что текст содержит информацию о местах
-    expect(actual).toContain("3/2, 3/3");
+    expect(actual).toContain("2/2, 2/3");
   }, 150000);
 
   test("Should block booking already purchased seat", async () => {
-    await clickElement(page, 'a.page-nav__day[data-time-stamp="1743627600"]');
-    await clickElement(page, 'a.movie-seances__time[data-seance-start="780"]');
+    // 1. Переходим на страницу и выбираем сеанс
+    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744146000"]');
+    await clickElement(page, 'a.movie-seances__time[data-seance-start="1080"]');
 
-    // Ждём загрузки схемы зала и занятых мест
-    await page.waitForSelector('.buying-scheme__wrapper', { visible: true });
+    // 2. Ждём загрузки схемы зала
+    await page.waitForSelector('.buying-scheme__wrapper', { visible: true, timeout: 50000 });
+    
+    // 3. Ждём появления хотя бы одного занятого места
+    await page.waitForSelector('.buying-scheme__chair_taken', { timeout: 10000 });
+    
+    // 4. Получаем все занятые места
     const takenSeats = await page.$$('.buying-scheme__chair_taken');
+    console.log(`Найдено занятых мест: ${takenSeats.length}`);
 
+    // 5. Проверяем, что есть занятые места
     if (takenSeats.length === 0) {
-        console.log("Нет занятых мест. Тест пропущен.");
-        return;
+        throw new Error("Нет занятых мест для тестирования!");
     }
 
-    // Кликаем на занятое место
-    await takenSeats[0].click();
+    // 6. Кликаем на последнее занятое место (более безопасно, чем брать фиксированный индекс)
+    await takenSeats[takenSeats.length - 1].click();
 
-    // Проверяем, что кнопка бронирования НЕ активна
-    const isButtonEnabled = await page.$eval(
+    // 7. Проверяем, что кнопка бронирования остаётся неактивной
+    const isButtonDisabled = await page.$eval(
         'button.acceptin-button',
-        (el) => !el.disabled
+        (el) => el.disabled
     );
-    expect(isButtonEnabled).toBe(false);
+    expect(isButtonDisabled).toBe(true);
 
-    // Проверяем сообщение об ошибке (если есть)
+    // 8. Проверяем сообщение об ошибке (если есть)
     const errorMessage = await page.$('.error-message');
     if (errorMessage) {
-        expect(await errorMessage.evaluate((el) => el.textContent)).toContain(
-            "Место уже занято"
-        );
+        const errorText = await errorMessage.evaluate(el => el.textContent.trim());
+        expect(errorText).toMatch(/Место уже занято|забронировано/i);
     }
 }, 200000);
 });
