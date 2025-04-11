@@ -26,12 +26,13 @@ describe("Go to cinema tests", () => {
   });
 
   test("Should select one chair", async () => {
-    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744405200"]'); //Сб 12 <a class="page-nav__day page-nav__day_weekend page-nav__day_chosen" href="#" data-time-stamp="1744405200">
+    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744750800"]');
+  // Ср 16 <a class="page-nav__day page-nav__day_chosen" href="#" data-time-stamp="1744750800">
   
     await clickElement(page, 'a.movie-seances__time[data-seance-start="780"'); //13:00
     
     // Ждём загрузки схемы зала
-    await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 30000 }); 
+    await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 45000 }); 
   
     // Ищем свободные места
     const availableSeats = await page.$$('.buying-scheme__chair_standart:not(.buying-scheme__chair_taken)');
@@ -57,11 +58,13 @@ describe("Go to cinema tests", () => {
     }, 150000);
 
   test("Should select two chairs", async () => {
-    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744146000"]'); //9 апр <a class="page-nav__day" href="#" data-time-stamp="1744146000">
+    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744664400"]');
+    // Вт 15 <a class="page-nav__day page-nav__day_chosen" href="#" data-time-stamp="1744664400">
+    
     await clickElement(page, 'a.movie-seances__time[data-seance-start="1080"');  //18:00
     
     // Ждём загрузки схемы зала
-    await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 10000 });
+    await page.waitForSelector('.buying-scheme__chair_standart', { visible: true, timeout: 20000 });
   
     // Ищем свободные места
     const availableSeats = await page.$$('.buying-scheme__chair_standart:not(.buying-scheme__chair_taken)');
@@ -89,14 +92,14 @@ describe("Go to cinema tests", () => {
 
   test("Should block booking already purchased seat", async () => {
     // 1. Переходим на страницу и выбираем сеанс
-    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744146000"]');
+    await clickElement(page, 'a.page-nav__day[data-time-stamp="1744664400"]');
     await clickElement(page, 'a.movie-seances__time[data-seance-start="1080"]');
 
     // 2. Ждём загрузки схемы зала
     await page.waitForSelector('.buying-scheme__wrapper', { visible: true, timeout: 50000 });
     
     // 3. Ждём появления хотя бы одного занятого места
-    await page.waitForSelector('.buying-scheme__chair_taken', { timeout: 10000 });
+    await page.waitForSelector('.buying-scheme__chair_taken', { timeout: 20000 });
     
     // 4. Получаем все занятые места
     const takenSeats = await page.$$('.buying-scheme__chair_taken');
